@@ -10,9 +10,9 @@ parser.add_argument('-p','--port',dest='redis_port',action='store',help='Redis s
 parser.add_argument('-a','--auth',dest='redis_pass',action='store',help='Redis server pass',default=None)
 args = parser.parse_args()
 
-zabbix_host = '127.0.0.1'	# Zabbix Server IP
-zabbix_port = 10051			# Zabbix Server Port
-hostname = 'redis.srv.name'	# Name of monitored server like it shows in zabbix web ui display
+zabbix_host = '127.0.0.1'       # Zabbix Server IP
+zabbix_port = 10051             # Zabbix Server Port
+hostname = 'redis.srv.name'     # Name of monitored server like it shows in zabbix web ui display
 
 class Metric(object):
     def __init__(self, host, key, value, clock=None):
@@ -120,13 +120,14 @@ else:
 
 	a = []
 	for i in server_info:
-		a.append(Metric(args.hostname, ('redis[%s]' % i), server_info[i]))
+		a.append(Metric(hostname, ('redis[%s]' % i), server_info[i]))
 
 	keys = client.keys('*')
 	llensum = 0
 	for key in keys:
-		llensum += client.llen(key)
-	a.append(Metric(args.hostname, 'redis[llenall]', llensum))
+                if client.type(key) == 'list':
+                        llensum += client.llen(key)
+	a.append(Metric(hostname, 'redis[llenall]', llensum))
 
 
 	send_to_zabbix(a, zabbix_host, zabbix_port)
