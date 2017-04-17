@@ -1,7 +1,7 @@
-#zbx_redis_template
+# zbx_redis_template
 
 Zabbix template for Redis (node.js or python)
-##System requirements
+## System requirements
 
 ### For use node.js version script
 - [node.js](https://github.com/joyent/node) 
